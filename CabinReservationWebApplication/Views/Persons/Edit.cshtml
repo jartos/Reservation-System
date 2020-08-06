@@ -1,0 +1,61 @@
+﻿@model CabinReservationWebApplication.Models.Person
+
+@{
+    ViewData["Title"] = "Muokkaa henkilön tietoja";
+}
+
+<h1>Muokkaa henkilön tietoja</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PersonId" />
+            <div class="form-group">
+                <label asp-for="SocialSecurityNumber" class="control-label"></label>
+                <input asp-for="SocialSecurityNumber" class="form-control" readonly />
+                <span asp-validation-for="SocialSecurityNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Postinumero</label>
+                <select asp-for="PostalCode" class="form-control" asp-items="@ViewBag.PostalCodes"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Rooli</label>
+                <select asp-for="Role" class="form-control" asp-items="@ViewBag.Roles"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tallenna" class="btn btn-primary" />
+            </div>
+        </form>
+        @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+        <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+    </div>
+</div>

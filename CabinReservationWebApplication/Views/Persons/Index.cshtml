@@ -1,0 +1,108 @@
+﻿@model CabinReservationWebApplication.Models.Person
+
+@{
+    ViewData["Title"] = "Asiakkaat";
+    IEnumerable<Person> persons = ViewBag.Persons;
+}
+
+<h1>Henkilöt</h1>
+<br />
+<br />
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+<br />
+<h3>Anna hakuehdot</h3>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+
+            <label asp-for="LastName" class="control-label"></label>
+            <input asp-for="LastName" class="form-control" />
+
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Hae" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+<br />
+@if (persons == null && ViewBag.FirstEntry == false)
+{
+    <label>Annetuilla hakuehdoilla ei löytynyt asiakkaita</label>
+}
+@if (persons != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.FirstName)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.LastName)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.Email)</h6>
+                </th>
+                @*<th>
+                    <h6>@Html.DisplayNameFor(model => model.PhoneNumber)</h6>
+                </th>*@
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.Address)</h6>
+                </th>
+                @*<th>
+                    <h6>@Html.DisplayNameFor(model => model.Post.PostalCode)</h6>
+                </th>*@
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.Post.City)</h6>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in persons)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    @*<td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>*@
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    @*<td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Post.PostalCode)
+                    </td>*@
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Post.City)
+                    </td>
+                    <td class="text-right">
+                        <a asp-action="Edit" asp-route-id="@item.PersonId" class="btn btn-success btn-sm">Muokkaa</a>
+                        <a asp-action="Details" asp-route-id="@item.PersonId" class="btn btn-info btn-sm">Tiedot</a>
+                        <a asp-action="Delete" asp-route-id="@item.PersonId" class="btn btn-danger btn-sm">Poista</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}

@@ -1,0 +1,106 @@
+﻿@model CabinReservationWebApplication.Models.Activity
+
+@{
+    ViewData["Title"] = "Lisäpalvelut";
+    IEnumerable<Activity> activites = ViewBag.Activities;
+}
+<h1>Lisäpalvelut</h1>
+<br />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Lisää uusi</a>
+</p>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+<br />
+<h3>Anna hakuehdot</h3>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+
+            <label>Toimipisteen nimi</label>
+            <input asp-for="Resort.ResortName" class="form-control" value="@ViewBag.ResortName" />
+
+            <label>Lisäpalvelun nimi</label>
+            <input asp-for="ActivityName" class="form-control" />
+
+            <label asp-for="ActivityProvider" class="control-label"></label>
+            <input asp-for="ActivityProvider" class="form-control" />
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Hae" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+<br />
+@if (activites == null && ViewBag.FirstEntry == false)
+{
+    <label>Annetuilla hakuehdoilla ei löytynyt lisäpalveluita</label>
+}
+@if (activites != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.ActivityName)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.ActivityProvider)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.PostalCode)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.Address)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.ActivityPrice)</h6>
+                </th>
+                <th>
+                    <h6>Toimipiste</h6>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in activites)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.ActivityName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.ActivityProvider)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.PostalCode)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.ActivityPrice)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Resort.ResortName)
+                    </td>
+                    <td class="text-right">
+                        <a asp-action="Edit" asp-route-id="@item.ActivityId" class="btn btn-success btn-sm">Muokkaa</a>
+                        <a asp-action="Details" asp-route-id="@item.ActivityId" class="btn btn-info btn-sm">Tiedot</a>
+                        <a asp-action="Delete" asp-route-id="@item.ActivityId" class="btn btn-danger btn-sm">Poista</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

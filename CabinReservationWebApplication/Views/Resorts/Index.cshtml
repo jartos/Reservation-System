@@ -1,0 +1,88 @@
+﻿@model IEnumerable<CabinReservationWebApplication.Models.Resort>
+
+@{
+    ViewData["Title"] = "Toimipisteet";
+}
+
+<h1>Toimipisteet</h1>
+<br />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Lisää uusi</a>
+</p>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+<br />
+@if (Model != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>Toimipiste</h6>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.ResortName)
+                    </td>
+                    <td class="text-right">
+                        <form asp-controller="Cabins" asp-action="Index" asp-route-Cabin.Resort.ResortName="@item.ResortName" method="post">
+                            <input type="submit" value="Majoituspaikat" class="btn btn-primary btn-sm " />
+                        </form>
+                    </td>
+                    <td class="text-right">
+                        <form asp-controller="Activities" asp-action="Index" asp-route-Activity.Resort.ResortName="@item.ResortName" method="post">
+                            <input type="submit" value="Lisäpalvelut" class="btn btn-primary btn-sm " />
+                        </form>
+                    </td>
+                    <td class="text-right">
+                        <a asp-action="Edit" asp-route-id="@item.ResortId" class="btn btn-success btn-sm ">Muokkaa</a>
+                        <a asp-action="Details" asp-route-id="@item.ResortId" class="btn btn-info btn-sm ">Tiedot</a>
+                        <a asp-action="Delete" asp-route-id="@item.ResortId" class="btn btn-danger btn-sm ">Poista</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    @*<hr />
+        <div class="container">
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-5"><h6>@Html.DisplayFor(modelItem => item.ResortName)</h6></div>
+                    <div class="col-md-2">
+                        <form asp-controller="Cabins" asp-action="Index" method="post">
+                            <input type="submit" value="Majoituspaikat" asp-controller="Cabins" asp-action="Index" asp-route-Cabin.Resort.ResortName="@item.ResortName" class="btn btn-primary btn-sm" />
+                        </form>
+                    </div>
+                    <div class="col-md-2">
+                        <form asp-controller="Cabins" asp-action="Index" method="post">
+                            <input type="submit" value="Lisäpalvelut" asp-controller="Activities" asp-action="Index" asp-route-Activity.Resort.ResortName="@item.ResortName" class="btn btn-primary btn-sm" />
+                        </form>
+                    </div>
+                    <div class="col-md-1"><a asp-action="Edit" asp-route-id="@item.ResortId" class="btn btn-success btn-sm">Muokkaa</a></div>
+                    <div class="col-md-1"><a asp-action="Details" asp-route-id="@item.ResortId" class="btn btn-info btn-sm">Tiedot</a></div>
+                    <div class="col-md-1"><a asp-action="Delete" asp-route-id="@item.ResortId" class="btn btn-danger btn-sm">Poista</a></div>
+                    <br />
+                    <hr />
+                }
+
+            </div>
+        </div>*@
+}

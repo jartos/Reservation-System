@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CabinReservationWebApplication.Models.BlobFiles>
+
+@{
+    ViewData["Title"] = "ShowAllBlobs";
+}
+
+<h3>BlobStorage -palvelimen tiedostot</h3>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FileSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedOn)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileSize)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModifiedOn)
+                </td>
+                <td class="text-right">
+                        <a asp-action="DownloadBlob" asp-route-blobName="@item.FileName" class="btn btn-success btn-sm">Lataa kuva</a>
+                        <a asp-action="DeleteBlob" asp-route-blobName="@item.FileName" class="btn btn-danger btn-sm">Poista kuva</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

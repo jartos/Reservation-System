@@ -1,0 +1,22 @@
+﻿@inject ServiceRepository service
+
+@{
+    var resorts = await service.GetResorts();
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <b>Toimipisteet</b>  
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        @if (resorts != null)
+        {
+            @foreach (var item in resorts)
+            {
+                <form asp-controller="Home" asp-action="Index">
+                    <input type="submit" value="@item.ResortName" asp-controller="Home" asp-action="Index" asp-route-SearchWord="@item.ResortName" class="dropdown-item nav-link text-dark" style="font-weight:bold;" />
+                </form>
+            }
+        }
+    </div>
+</li>

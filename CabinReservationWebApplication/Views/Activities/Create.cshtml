@@ -1,0 +1,58 @@
+﻿@model CabinReservationWebApplication.Models.Activity
+
+@{
+    ViewData["Title"] = "Lisää lisäpalvelu";
+}
+
+<h1>Lisää lisäpalvelu</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label>Toimipiste</label>
+                <select asp-for="ResortId" class="form-control" asp-items="@ViewBag.Resorts"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PostalCode" class="control-label"></label>
+                <select asp-for="PostalCode" class="form-control" asp-items="@ViewBag.PostalCodes"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ActivityProvider" class="control-label"></label>
+                <input asp-for="ActivityProvider" class="form-control" />
+                <span asp-validation-for="ActivityProvider" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActivityName" class="control-label"></label>
+                <input asp-for="ActivityName" class="form-control" />
+                <span asp-validation-for="ActivityName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActivityPrice" class="control-label"></label>
+                <input asp-for="ActivityPrice" class="form-control" />
+                <span asp-validation-for="ActivityPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lisää" class="btn btn-primary" />
+            </div>
+        </form>
+        @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+        <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+    </div>
+</div>

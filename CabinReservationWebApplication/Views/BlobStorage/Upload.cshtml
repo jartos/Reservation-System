@@ -1,0 +1,70 @@
+﻿@model CabinReservationWebApplication.Models.CabinImage
+
+@{
+    ViewData["Title"] = "Upload";
+
+    List<CabinImage> cabinImages = ViewBag.CabinImages;
+}
+
+<h3>Lataa mökin kuva palvelimelle</h3>
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        @*<form method="post" enctype="multipart/form-data" asp-controller="BlobStorage" asp-action="Upload">*@
+        <form enctype="multipart/form-data" asp-action="Upload">
+            <div class="form-group">
+                <label> Valitse tiedosto </label>
+                @*<input class="form-control" name="files" multiple="multiple" type="file" value="Valitse" />*@
+                <input class="form-control" multiple="multiple" type="file" asp-for="Files" value="@ViewBag.CabinId" />
+            </div>
+            <input asp-for="CabinId" class="form-control" type="hidden" />
+            <p class="text-danger">@ViewBag.SelectImage</p>
+            <div class="form-group">
+                @if (cabinImages.Count() < 4)
+                {
+                    <input class="btn btn-success" type="submit" value="Lataa" />
+                }
+                else
+                {
+                    <input class="btn btn-success" type="submit" value="Lataa" disabled />
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@if (cabinImages.Count() == 0)
+{
+    <label>Majoituspaikalla ei ole yhtään kuvaa</label>
+}
+@if (cabinImages.Count() == 4)
+{
+    <label>Majoituspaikalla on maksimäärä kuvia</label>
+}
+
+
+<table class="table table-borderless">
+    <tbody>
+
+        @if (cabinImages.Count() > 0)
+        {
+
+            @foreach (var item in cabinImages)
+            {
+                var source = "https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/" + item.ImageUrl;
+                <tr>
+                    <td>
+                        <img src="@source" height="300" />
+                    </td>
+                    <td class="align-middle">
+                        <a asp-action="DeleteBlob" asp-route-blobName="@item.ImageUrl" asp-route-cabinImageId="@item.CabinImageId" asp-route-Id="@item.CabinId" class="btn btn-danger btn-sm">Poista kuva</a>
+                    </td>
+                </tr>
+            }
+
+        }
+
+    </tbody>
+</table>

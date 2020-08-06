@@ -1,0 +1,58 @@
+﻿@model CabinReservationWebApplication.Models.Invoice
+
+@{
+    ViewData["Title"] = "Lisää lasku";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-basic.css" type="text/css" />
+}
+
+<h1>Lisää lasku</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CabinReservationId" value="@ViewBag.CabinReservationId" />
+            <div class="form-group">
+                <input type="hidden" asp-for="DateOfExpiry" id="Starting" value="@ViewBag.CalculatedDateOfExpiry" />
+                <input id="StartingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä" value="@ViewBag.CalculatedDateOfExpiry.ToString("dd'.'MM'.'yyyy")" />
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="PaidYesNo" /> @Html.DisplayNameFor(model => model.PaidYesNo)
+                </label>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="Vat" class="control-label"></label>
+                    <input asp-for="Vat" class="form-control" />
+                    <span asp-validation-for="Vat" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Discount" class="control-label"></label>
+                    <input asp-for="Discount" class="form-control" />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <label asp-for="InvoiceTotalAmount" class="control-label"></label>
+                <input asp-for="InvoiceTotalAmount" class="form-control" value="@ViewBag.CalculatedTotalAmount" />
+                <span asp-validation-for="InvoiceTotalAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lisää" class="btn btn-primary" />
+            </div>
+        </form>
+        @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+        <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+    </div>
+</div>
+
+@section scripts{
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/datepicker-basic.js"></script>
+}

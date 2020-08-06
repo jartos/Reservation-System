@@ -1,0 +1,207 @@
+﻿@model CabinReservationWebApplication.Models.Invoice
+
+@{
+    ViewData["Title"] = "Details";
+    Invoice invoice = ViewBag.Invoice;
+    decimal discount = 0;
+}
+<br />
+<br />
+<h1>Laskun tiedot</h1>
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <img src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/vp3.png" height="200" />
+        </div>
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+        </div>
+    </div>
+</div>
+<br />
+<hr />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <h5>Kohde</h5>
+        </div>
+        <div class="col-3">
+            <h5></h5>
+        </div>
+        <div class="col-3">
+            <h5>Asiakas</h5>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <p>
+                @invoice.CabinReservation.Cabin.Resort.ResortName
+            </p>
+            <p>@invoice.CabinReservation.Cabin.CabinName</p>
+            <p>
+                @invoice.CabinReservation.Cabin.Address
+            </p>
+            <p>
+                @invoice.CabinReservation.Cabin.PostalCode
+            </p>
+            <p>
+                @invoice.CabinReservation.Cabin.Post.City
+            </p>
+            <p>
+                Pinta-ala: @invoice.CabinReservation.Cabin.Area m²
+            </p>
+            <p>Makuuhuoneet: @invoice.CabinReservation.Cabin.Rooms</p>
+            <p>Hinta: @invoice.CabinReservation.Cabin.CabinPricePerDay €/yö</p>
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <p>@invoice.CabinReservation.Person.FirstName</p>
+            <p>@invoice.CabinReservation.Person.LastName</p>
+            <p>@invoice.CabinReservation.Person.Address</p>
+            <p>@invoice.CabinReservation.Person.PostalCode</p>
+            <p>@invoice.CabinReservation.Person.Post.City</p>
+            <p>@invoice.CabinReservation.Person.PhoneNumber</p>
+            <p>@invoice.CabinReservation.Person.Email</p>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <h5>Lisäpalvelut</h5>
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <h5>Varauspäivä</h5>
+        </div>
+        <div class="col-3">
+            <h4></h4>
+        </div>
+    </div>
+</div>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            @foreach (var activity in invoice.CabinReservation.ActivityReservations)
+            {
+                <p>@activity.Activity.ActivityName @activity.Activity.ActivityPrice €</p>
+            }
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <p>@invoice.CabinReservation.ReservationBookingTime.ToShortDateString()</p>
+        </div>
+        <div class="col-3">
+            <h4></h4>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <h5>Varauksen kesto</h5>
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <p></p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <p>
+                @invoice.CabinReservation.ReservationStartDate.ToShortDateString() - @invoice.CabinReservation.ReservationEndDate.ToShortDateString()
+                <br />
+                @((invoice.CabinReservation.ReservationEndDate - invoice.CabinReservation.ReservationStartDate).TotalDays.ToString())
+                @{var i = (invoice.CabinReservation.ReservationEndDate - invoice.CabinReservation.ReservationStartDate).TotalDays;}
+                @(i == 1 ? "yö" : "yötä")
+            </p>
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            @{discount = invoice.Discount;
+                int discountvalue = Convert.ToInt32(discount);
+            }
+            @if (discount > 0)
+            {
+                <h5>Alennus</h5>
+                <p>Alennus -@discountvalue%</p>
+            }
+        </div>
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <h4></h4>
+        </div>
+        <div class="col-3">
+            <p></p>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <h4>Kokonaishinta:</h4>
+        </div>
+        <div class="col-3">
+            @foreach (var invoices in invoice.CabinReservation.Invoices)
+            {
+                <h4>@invoice.InvoiceTotalAmount €</h4>
+            }
+        </div>
+        <div class="col-3">
+            <h4></h4>
+        </div>
+        <div class="col-3" ">
+        </div>
+    </div>
+</div>

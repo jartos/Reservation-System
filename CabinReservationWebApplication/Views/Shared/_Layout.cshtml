@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @*<title>@ViewData["Title"] - CabinReservationWebApplication</title>*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    @* CSS for calendar *@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    @*<link rel="stylesheet" href="/resources/demos/style.css">*@
+    @*<link rel="stylesheet" href="~/css/datepicker.css" type="text/css" />*@
+    @RenderSection("Styles", false)
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid" style="padding-left:7em; padding-right:7em;">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/test-nav.png" height="100" width="171" />
+                </a>
+
+                <button style="padding-left: 200px; padding-bottom: 20px; border:none; background:none; outline:none; padding-top: 30px;" class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <partial name="_ResortsDropDownPartial" />
+
+                        @*@if (this.User.IsInRole("CabinOwner"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-link text-dark text-left" asp-controller="Cabins" asp-action="Create" title="Ilmoita mökki"><b>Ilmoita mökki</b></a>
+                                </li>
+                            }
+                            else if (this.User.IsInRole("Administrator")) { }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-link text-dark text-left" asp-controller="Home" asp-action="BecomeCabinOwner" title="Ilmoita mökki"><b>Ilmoita mökki</b></a>
+                                </li>
+                            }*@
+
+                        <partial name="_AdministratorDropDownPartial" />
+
+                        <partial name="_CabinOwnerPartial" />
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <br /><br />
+
+    <div style="padding:60px;"></div>
+
+    <footer class="container-fluid text-center" style="padding-top:50px; padding-bottom:50px; border-top-right-radius: 25px; border-top-left-radius: 25px; @*border-top-style: groove;*@">
+        <div class="row">
+            <div class="col-sm-4" style="padding-top:100px">
+                <h3>Ota yhteyttä</h3>
+                <br />
+                <br />
+                <h4 class="lead">Village People</h4>
+                <h4 class="lead">Mökkitie 1</h4>
+                <h4 class="lead">02550 Evitskog</h4>
+                <h4 class="lead">Kirkkonummi</h4>
+                <h4 class="lead">villagepeopleholidays@gmail.com</h4>
+                <br />
+                <br />
+            </div>
+            <div class="col-sm-4" style="padding-top:100px">
+                <h3>Seuraa meitä</h3>
+                <br />
+                <a href="#" class="fa fa-facebook" style="padding: 20px; font-size: 30px; text-decoration: none;"></a>
+                <a href="#" class="fa fa-twitter" style="padding: 20px; font-size: 30px; text-decoration: none;"></a>
+                <a href="#" class="fa fa-youtube" style="padding: 20px; font-size: 30px; text-decoration: none;"></a>
+                <a href="#" class="fa fa-instagram" style="padding: 20px; font-size: 30px; text-decoration: none;"></a>
+                <a href="#" class="fa fa-linkedin" style="padding: 20px;
+        font-size: 30px;
+        text-decoration: none;
+"></a>
+            </div>
+            <div class="col-sm-4" style="padding-top:100px">
+                <h3>Developers</h3>
+                <br />
+                <br />
+                <h4 class="lead">Juha Korhonen</h4>
+                <a onmouseover="this.style.color = 'blue'" onmouseout="this.style.color='black'" href="https://fi.linkedin.com/in/jarno-tossavainen-a70b47165" style="color:black; text-decoration:none"><h4 class="lead">Jarno Tossavainen</h4></a>
+                <h4 class="lead">Pasi Yli-Pirilä</h4>
+            </div>
+        </div>
+        <div style="align-content:center; padding-top:100px">
+            <img src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/vp3.png" style="width: 6em; height: 6em;" />
+            <br />
+            &copy; 2020 - CabinReservationWebApplication
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

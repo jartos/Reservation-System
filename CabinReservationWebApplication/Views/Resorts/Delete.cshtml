@@ -1,0 +1,29 @@
+﻿@model CabinReservationWebApplication.Models.Resort
+
+@{
+    ViewData["Title"] = "Poista Toimipiste";
+}
+
+<h1>Poista Toimipiste</h1>
+<br />
+<h3>Haluatko varmasti poistaa toimipisteen?</h3>
+<div>
+    <br />
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResortName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResortName)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ResortId" />
+        <input type="submit" value="Poista" class="btn btn-danger" />
+    </form>
+    <br />
+    @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+    <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+</div>

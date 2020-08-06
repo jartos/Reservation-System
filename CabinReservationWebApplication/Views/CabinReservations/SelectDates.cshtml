@@ -1,0 +1,138 @@
+﻿@model CabinReservationWebApplication.Models.CabinReservation
+@{
+    ViewData["Title"] = "SelectDates";
+
+    CabinReservation cabinReservation = ViewBag.CabinReservation;
+
+    // Counter for looping selected ActivityReservations
+    int counter = 0;
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-green.css" type="text/css" />
+}
+
+<br />
+<br />
+<h1>Valitse lisäpalveluiden ajankohdat</h1>
+<br />
+<br />
+<div class="col-md-4">
+    <form asp-action="Confirm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CabinId" class="form-control" value="@cabinReservation.CabinId" />
+        <input type="hidden" asp-for="Cabin.CabinName" class="form-control" value="@cabinReservation.Cabin.CabinName" />
+        <input type="hidden" asp-for="Cabin.Resort.ResortName" class="form-control" value="@cabinReservation.Cabin.Resort.ResortName" />
+        <input type="hidden" asp-for="Cabin.CabinPricePerDay" class="form-control" value="@cabinReservation.Cabin.CabinPricePerDay" />
+        <input type="hidden" asp-for="ReservationStartDate" class="form-control" value="@cabinReservation.ReservationStartDate" id="StartDate" />
+        <input type="hidden" asp-for="ReservationEndDate" class="form-control" value="@cabinReservation.ReservationEndDate" id="EndDate" />
+
+
+        <input type="hidden" asp-for="PersonId" class="form-control" value="@cabinReservation.PersonId" />
+        <input type="hidden" asp-for="CabinReservationId" class="form-control" value="@cabinReservation.CabinReservationId" />
+        <input type="hidden" asp-for="ReservationBookingTime" class="form-control" value="@cabinReservation.ReservationBookingTime" />
+
+        <input type="hidden" asp-for="Person.Address" class="form-control" value="@cabinReservation.Person.Address" />
+        <input type="hidden" asp-for="Person.Email" class="form-control" value="@cabinReservation.Person.Email" />
+        <input type="hidden" asp-for="Person.FirstName" class="form-control" value="@cabinReservation.Person.FirstName" />
+        <input type="hidden" asp-for="Person.LastName" class="form-control" value="@cabinReservation.Person.LastName" />
+        <input type="hidden" asp-for="Person.PersonId" class="form-control" value="@cabinReservation.Person.PersonId" />
+        <input type="hidden" asp-for="Person.PhoneNumber" class="form-control" value="@cabinReservation.Person.PhoneNumber" />
+        <input type="hidden" asp-for="Person.Post.City" class="form-control" value="@cabinReservation.Person.Post.City" />
+        <input type="hidden" asp-for="Person.Post.PostalCode" class="form-control" value="@cabinReservation.Person.Post.PostalCode" />
+        <input type="hidden" asp-for="Person.SocialSecurityNumber" class="form-control" value="@cabinReservation.Person.SocialSecurityNumber" />
+
+        @foreach (var item in cabinReservation.ActivityReservations)
+        {
+            <label>@item.Activity.ActivityName </label>
+            <div id="CalendarDiv-@counter"></div>
+            <p class="text-danger" id="SelectDate-@counter">Valitse päivämäärä</p>
+
+            <input type="hidden" asp-for="ActivityReservations[counter].ActivityReservationId" class="form-control" value="@item.ActivityReservationId" />
+            <input type="hidden" asp-for="ActivityReservations[counter].ActivityId" class="form-control" value="@item.ActivityId" />
+            <input type="hidden" asp-for="ActivityReservations[counter].Activity" class="form-control" value="@item.Activity" />
+            <input type="hidden" asp-for="ActivityReservations[counter].Activity.ActivityPrice" class="form-control" value="@item.Activity.ActivityPrice" />
+            <input type="hidden" asp-for="ActivityReservations[counter].Activity.ActivityName" class="form-control" value="@item.Activity.ActivityName" />
+            @Html.HiddenFor(model => model.ActivityReservations[counter].ActivityReservationTime, new { id = "ActivityReservationTime-" + counter })
+            counter++;
+        }
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" id="submitForm" hidden />
+            @*<a asp-action="Cabins" class="btn btn-secondary">Takaisin</a>*@
+        </div>
+    </form>
+    <button onclick="CheckValues()" class="btn btn-primary">Yhteenvetoon</button>
+
+    <ul class="list-group" id="SelectedActivityTimes"></ul>
+</div>
+
+@section scripts {
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        var counter = @cabinReservation.ActivityReservations.Count();
+        var startDate = new Date($("#StartDate").val());
+        var endDate = new Date($("#EndDate").val());
+
+        startDate.setHours(00);
+        endDate.setHours(00);
+
+        // Returns Array of Date-objects by startDate and endDate
+        var getDaysArray = function (start, end) {
+            for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+                arr.push(new Date(dt));
+            }
+            return arr;
+        };
+        var daylist = getDaysArray(startDate, endDate);
+
+        // Submit form
+        function CheckValues() {
+            // Checking that user has select all dates for ActivityReservations
+            var valuesOk = 1;
+            for (var x = 0; x < counter; x++) {
+                if ($("#ActivityReservationTime-" + x).val() == "") {
+                    valuesOk = 0;
+                    return;
+                }
+            }
+            // Submits form
+            if (valuesOk == 1) $("#submitForm").click();
+        }
+
+        // Sets ActivityReservationTime when user selects date in calendar
+        function setActivityReservationTime(e, elementId) {
+            $("#SelectDate-" + elementId).hide();
+            // Parsing dates, because wanna show date format dd.mm.yyyy in input-fields
+            var date = e.target.value;
+            var datearray = date.split(".");
+            var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+            // Setting date in HiddenFor-ActivityReservation-..
+            $("#ActivityReservationTime-" + elementId).val(newdate);
+        }
+
+        // Creating jQuery-datepickers for selecting ActivityReservationTimes
+        $(function () {
+
+            for (var i = 0; i < counter; i++) {
+                $("#CalendarDiv-" + i).append('<input readonly=true onchange="setActivityReservationTime(event, ' + i + ')" id="Calendar-' + i + '" />');
+                // Setting options for datepicker
+                $("#Calendar-" + i).datepicker({
+                    dateFormat: "dd.mm.yy"
+                    , minDate: startDate
+                    , maxDate: endDate
+                    , firstDay: 1
+                    , dayNames: ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"]
+                    , dayNamesMin: ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"]
+                    , monthNames: ["Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä", "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"]
+                    , nextText: "Seuraava"
+                    , prevText: "Edellinen"
+                    , beforeShowDay: function (date) {
+                        if (daylist.find(d => d.getTime() === date.getTime())) return [true, 'greenday', ""];
+                        return [false, 'redday', ""];
+                    }
+                });
+            }
+        });
+    </script>
+}

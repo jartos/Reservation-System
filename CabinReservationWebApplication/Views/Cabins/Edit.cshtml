@@ -1,0 +1,60 @@
+﻿@model CabinReservationWebApplication.Models.Cabin
+
+@{
+    ViewData["Title"] = "Muokkaa majoituspaikkaa";
+}
+
+<h1>Muokkaa majoituspaikkaa</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CabinId" />
+            <input type="hidden" asp-for="ResortId" />
+            <input type="hidden" asp-for="PersonId" />
+            <div class="form-group">
+                <label asp-for="CabinName" class="control-label"></label>
+                <input asp-for="CabinName" class="form-control" />
+                <span asp-validation-for="CabinName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Postinumero</label>
+                <select asp-for="PostalCode" class="form-control" asp-items="@ViewBag.PostalCodes"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CabinPricePerDay" class="control-label"></label>
+                <input asp-for="CabinPricePerDay" class="form-control" />
+                <span asp-validation-for="CabinPricePerDay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Area" class="control-label"></label>
+                <input asp-for="Area" class="form-control" />
+                <span asp-validation-for="Area" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rooms" class="control-label"></label>
+                <input asp-for="Rooms" class="form-control" />
+                <span asp-validation-for="Rooms" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Tallenna" class="btn btn-primary" />
+            </div>
+        </form>
+        <a asp-controller="BlobStorage" asp-action="Upload" asp-route-cabinId="@Model.CabinId" class="btn btn-info">Muokkaa kuvia</a>
+        @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+        <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+    </div>
+</div>

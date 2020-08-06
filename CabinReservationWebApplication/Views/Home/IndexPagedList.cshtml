@@ -1,0 +1,229 @@
+﻿@model CabinReservationWebApplication.Models.CabinSearch
+@using X.PagedList.Mvc.Core
+<link href="~/css/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewData["Title"] = "Village People Oy";
+    X.PagedList.IPagedList<Cabin> cabins = ViewBag.Cabins;
+
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-basic.css" type="text/css" />
+}
+
+@if (Model != null) { var hakusana = Model.SearchWord; }
+<br />
+<br />
+<br />
+<br />
+<form asp-action="Index">
+    <div class="jumbotron" style="height: 100%;
+        padding: 7rem 4rem;
+        border-radius: 1.5rem;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url(https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/SiteImages/sky.jpg);">
+        <div class="row">
+            <div class="form-group col-md-3">
+                <!--TODO: Maybe here we can add autocomplete later -->
+                <input asp-for="SearchWord" class="form-control" placeholder="Toimipiste tai kohde" autocomplete="off" />
+            </div>
+            <div class="form-group col-md-3">
+                @Html.HiddenFor(model => model.Arrival, new { id = "Arrival" })
+                <input id="ArricalDatePicker" class="form-control" autocomplete="off" placeholder="Saapuminen" value="@ViewBag.Arrival" />
+            </div>
+            <div class="form-group col-md-3">
+                @Html.HiddenFor(model => model.Departure, new { id = "Departure" })
+                <input id="DepartureDatePicker" class="form-control" autocomplete="off" placeholder="Lähtö" value="@ViewBag.Departure" />
+            </div>
+            <div class="form-group col-md-2">
+                <select asp-for="Rooms" class="form-control">
+                    <option>1 henkilöä</option>
+                    <option>2 henkilöä</option>
+                    <option>3 henkilöä</option>
+                    <option>4 henkilöä</option>
+                    <option>5 henkilöä</option>
+                    <option>6 henkilöä</option>
+                    <option>7 henkilöä</option>
+                    <option>8 henkilöä</option>
+                    <option>9 henkilöä</option>
+                    <option>10 henkilöä</option>
+                    <option>>10 henkilöä</option>
+                </select>
+            </div>
+            <div class="form-group col-md-1">
+                <input type="submit" value="Hae" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    @if (cabins != null)
+    {
+        <div class="form-group">
+            <div class="row float-right" style="padding-right: 20px;">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Järjestä
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Hinta - Halvimmat ensin" />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Hinta - Kalleimmat ensin" />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Pinta-ala - Suurimmat ensin" />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Pinta-ala - Pienimmät ensin" />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Makuuhuoneet - Max." />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Makuuhuoneet - Min." />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Nimi - Laskeva aakkosjärjestys" />
+                        <input type="submit" asp-for="Sort" class="dropdown-item text-dark" value="Nimi - Nouseva aakkosjärjestys" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</form>
+<br />
+<br />
+<br />
+<br />
+
+@if (cabins == null && ViewBag.FirstEntry == false)
+{
+    <h3>Annetuilla hakuehdoilla ei löytynyt kohteita. Ole hyvä ja muuta hakuehtoja.</h3>
+}
+
+@if (cabins != null)
+{
+<div class="container" style="width: 100%;">
+
+    @foreach (var item in cabins)
+    {
+        <div class="row" style="width:100%; padding-top: 5%; padding-bottom: 120px; vertical-align: middle;">
+            <div col-sm-3 style="padding-right: 60px; display: inline-block;">
+                @*<a asp-controller="Cabins" asp-action="Details" asp-route-id="@item.CabinId" class="text-dark"><img src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/vp3.png" height="200" width="200" /></a>*@
+                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.CabinId" class="text-dark">
+
+                    @if (item.CabinImages.Count() == 0)
+                    {
+                        <img src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/vp3.png" style="width:15em; height:15em;" />
+                    }
+                    else
+                    {
+                        var source = "https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/" + item.CabinImages[0].ImageUrl;
+
+                        <img src="@source" style="width:15em; height:15em; object-fit: cover;" />
+                    }
+                </a>
+            </div>
+            <div col-sm-3 style="padding-right: 60px; padding-top:20px; display: inline-block;">
+
+                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.CabinId" class="text-dark">
+                    <h3>@item.CabinName</h3>
+                    <br />
+                    <p>@item.Rooms makuuhuonetta</p>
+                    <p>@item.Area m²</p>
+
+                </a>
+
+            </div>
+            <div col-sm-3 style="padding-right: 90px; display: inline-block;">
+                @{ var url = "https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/Resorts/" + item.Resort.ResortName + ".png";}
+                <img src=@url onerror="this.style.display='none'" style="width:5em; height:5em;" />
+            </div>
+            <div col-sm-3 style="padding-left:5px">
+                <br />
+                <h3>@item.CabinPricePerDay € / vrk</h3>
+            </div>
+        </div>
+    }
+</div>
+}
+
+@Html.PagedListPager(cabins, page => Url.Action("IndexPagedList",
+    new
+    {
+        PageArrival = ViewBag.PageArrival,
+        PageDeparture = ViewBag.PageDeparture,
+        PageRooms = ViewBag.PageRooms,
+        searchWord = ViewBag.PageSearchWord,
+        PageSort = ViewBag.PageSort,
+        page
+    }))
+
+<partial name="_UpperFooterPartial" />
+
+@section scripts{
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+
+        // TODO: Maybe later here we can add that Departure is automatic always at least 1day greater than Arrival
+
+        function SelectArrivalDate(dateText) {
+            var date = dateText;
+            var datearray = date.split(".");
+            var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+            // Setting date in HiddenFor-Arrival
+            $("#Arrival").val(newdate);
+
+            if ($("#Departure").val() < newdate && $("#Departure").val() != "") {
+                SelectDepartureDate(dateText);
+            }
+
+            $("#DepartureDatePicker").datepicker('option', 'minDate', dateText);
+
+        }
+
+        function SelectDepartureDate(dateText) {
+
+            var date = dateText;
+            var datearray = date.split(".");
+            var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+
+            // Setting date in HiddenFor-Departure
+            $("#Departure").val(newdate);
+        }
+
+        // Creating jQuery-datepickers for selecting Arrival/DepartureDates
+        $(function () {
+
+            var departureMinDate = 0;
+            if ($("#Arrival").val() != "") {
+                departureMinDate = new Date($("#Arrival").val())
+            }
+
+            // Setting options for datepicker
+            $("#ArricalDatePicker").datepicker({
+                dateFormat: "dd.mm.yy"
+                , minDate: 0
+                , firstDay: 1
+                , dayNames: ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"]
+                , dayNamesMin: ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"]
+                , monthNames: ["Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä", "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"]
+                , nextText: "Seuraava"
+                , prevText: "Edellinen"
+                , onSelect: function (dateText, inst) {
+                    SelectArrivalDate(dateText);
+                }
+            });
+
+            $("#DepartureDatePicker").datepicker({
+                dateFormat: "dd.mm.yy"
+                , minDate: departureMinDate
+                , firstDay: 1
+                , dayNames: ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"]
+                , dayNamesMin: ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"]
+                , monthNames: ["Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä", "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"]
+                , nextText: "Seuraava"
+                , prevText: "Edellinen"
+                , onSelect: function (dateText, inst) {
+                    SelectDepartureDate(dateText);
+                }
+            });
+        });
+    </script>
+}

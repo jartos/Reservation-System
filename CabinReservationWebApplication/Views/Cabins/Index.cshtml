@@ -1,0 +1,110 @@
+﻿@model CabinReservationWebApplication.Models.Cabin
+
+@{
+    ViewData["Title"] = "Majoituspaikat";
+    IEnumerable<Cabin> cabins = ViewBag.Cabins;
+}
+<h1>Majoituspaikat</h1>
+<br />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Lisää uusi</a>
+</p>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+<br />
+@if (User.IsInRole("Administrator"))
+{
+    <h3>Anna hakuehdot</h3>
+    <br />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Index">
+
+                <label>Toimipisteen nimi</label>
+                <input asp-for="Resort.ResortName" class="form-control" value="@ViewBag.ResortName" />
+
+                <label asp-for="CabinName" class="control-label"></label>
+                <input asp-for="CabinName" class="form-control" />
+
+                <label>Omistajan sukunimi</label>
+                <input asp-for="Person.LastName" class="form-control" />
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Hae" class="btn btn-primary" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <br />
+}
+@if (cabins == null && ViewBag.FirstEntry == false && User.IsInRole("Administrator"))
+{
+    <label>Annetuilla hakuehdoilla ei löytynyt majoituspaikkoja</label>
+}
+@if (cabins != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.CabinName)</h6>
+                </th>
+                <th>
+                    <h6>Toimipiste</h6>
+                </th>
+                <th>
+                    <h6>Omistaja</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.PostalCode)</h6>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in cabins)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Resort.ResortName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Person.FirstName) @Html.DisplayFor(modelItem => item.Person.LastName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.PostalCode)
+                    </td>
+                    <td class="text-right">
+                        <form asp-controller="CabinReservations" asp-action="Index">
+                            <input type="submit" value="Varaukset" asp-controller="CabinReservations" asp-action="Index" asp-route-CabinId="@item.CabinId" class="btn btn-secondary btn-sm" />
+                        </form>
+                    </td>
+                    <td class="text-right">
+                        @if (this.User.IsInRole("Administrator"))
+                        {
+                            <a asp-controller="CabinReservations" asp-action="Create" asp-route-id="@item.CabinId" class="btn btn-primary btn-sm">Lisää varaus</a>
+                        }
+
+                        <a asp-action="Edit" asp-route-id="@item.CabinId" class="btn btn-success btn-sm">Muokkaa</a>
+                        <a asp-action="Details" asp-route-id="@item.CabinId" class="btn btn-info btn-sm">Tiedot</a>
+                        <a asp-action="Delete" asp-route-id="@item.CabinId" class="btn btn-danger btn-sm">Poista</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}

@@ -1,0 +1,119 @@
+﻿@model CabinReservationWebApplication.Models.ActivityReservation
+
+@{
+    ViewData["Title"] = "Lisäpalveluvaraukset";
+    IEnumerable<ActivityReservation> activityReservations = ViewBag.ActivityReservations;
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-basic.css" type="text/css" />
+}
+<h1>Lisäpalveluvaraukset</h1>
+
+<br />
+<br />
+<h3>Anna hakuehdot</h3>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+
+            <label>Toimipisteen nimi</label>
+            <input asp-for="CabinReservation.Cabin.Resort.ResortName" class="form-control" />
+
+            <label>Lisäpalvelun nimi</label>
+            <input asp-for="Activity.ActivityName" class="form-control" />
+
+            <label>Palveluntarjoajan nimi</label>
+            <input asp-for="Activity.ActivityProvider" class="form-control" />
+
+            <label class="control-label">
+                Varaajan sukunimi
+            </label>
+            <input asp-for="CabinReservation.Person.LastName" class="form-control" />
+
+            <!-- Setting starting- and endingdates in ActivityReservation.CabinReservationStart- and EndDate -->
+            @*<label>Alkaen</label>
+                <input asp-for="CabinReservation.ReservationStartDate" class="form-control" type="date" />
+                <label>Päättyen</label>
+                <input asp-for="CabinReservation.ReservationEndDate" class="form-control" type="date" />*@
+
+            <br />
+            @Html.HiddenFor(model => model.CabinReservation.ReservationStartDate, new { id = "Starting" })
+            <input id="StartingDatePicker" class="form-control" autocomplete="off" placeholder="Alkaen" value="@ViewBag.Starting" />
+            <br />
+            @Html.HiddenFor(model => model.CabinReservation.ReservationEndDate, new { id = "Ending" })
+            <input id="EndingDatePicker" class="form-control" autocomplete="off" placeholder="Päättyen" value="@ViewBag.Ending" />
+
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Hae" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+<br />
+@if (activityReservations == null && ViewBag.FirstEntry == false)
+{
+    <label>Annetuilla hakuehdoilla ei löytynyt lisäpalveluvarauksia</label>
+}
+@if (activityReservations != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>Toimipiste</h6>
+                </th>
+                <th>
+                    <h6>Lisäpalvelu</h6>
+                </th>
+                <th>
+                    <h6>Varaaja</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.Activity.ActivityProvider)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.ActivityReservationTime)</h6>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in activityReservations)
+            {
+                var reservationTime = item.ActivityReservationTime.ToString("dd'.'MM'.'yyyy");
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinReservation.Cabin.Resort.ResortName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Activity.ActivityName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinReservation.Person.FirstName) @Html.DisplayFor(modelItem => item.CabinReservation.Person.LastName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Activity.ActivityProvider)
+                    </td>
+                    <td class="align-middle">
+                        @reservationTime
+                    </td>
+                    <td class="text-right">
+                        @*<a asp-action="Edit" asp-route-id="@item.CabinReservationId">Edit</a> *@
+                        <a asp-action="Details" asp-route-id="@item.ActivityReservationId" class="btn btn-info btn-sm">Tiedot</a>
+                        @*<a asp-action="DeleteCabinReservation" asp-route-id="@item.CabinReservationId" class="btn btn-danger btn-sm">Poista</a>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section scripts{
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/datepicker-basic.js"></script>
+}

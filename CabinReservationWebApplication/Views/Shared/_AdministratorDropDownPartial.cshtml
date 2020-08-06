@@ -1,0 +1,26 @@
+﻿@if (this.User.IsInRole("Administrator"))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <b>Hallinta</b>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+            <a class="dropdown-item" asp-controller="Resorts" asp-action="Index"><b>Toimipisteet</b></a>
+
+            <a class="dropdown-item" asp-controller="Cabins" asp-action="Index"><b>Majoituspaikat</b></a>
+
+            <a class="dropdown-item" asp-controller="Activities" asp-action="Index"><b>Lisäpalvelut</b></a>
+
+            <a class="dropdown-item" asp-controller="Persons" asp-action="Index"><b>Henkilöt</b></a>
+
+            <a class="dropdown-item" asp-controller="CabinReservations" asp-action="Index"><b>Majoitusvaraukset</b></a>
+
+            <a class="dropdown-item" asp-controller="ActivityReservations" asp-action="Index"><b>Lisäpalveluvaraukset</b></a>
+
+            <a class="dropdown-item" asp-controller="Invoices" asp-action="Index"><b>Laskut</b></a>
+
+            <a class="dropdown-item" asp-controller="Reports" asp-action="Index"><b>Raportit</b></a>
+        </div>
+    </li>
+}

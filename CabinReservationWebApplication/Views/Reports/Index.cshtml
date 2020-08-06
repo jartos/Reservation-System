@@ -1,0 +1,362 @@
+﻿@model CabinReservationWebApplication.Models.Report
+
+@{
+    ViewData["Title"] = "Raportit";
+    List<SelectListItem> resortsToCheckListBox = ViewBag.ResortsToCheckListBox;
+    List<Resort> resorts = ViewBag.Resorts;
+    List<Cabin> cabins = ViewBag.Cabins;
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-basic.css" type="text/css" />
+}
+<h1>Raportit</h1>
+<br />
+<br />
+<h3>Anna hakuehdot</h3>
+<br />
+@if (this.User.IsInRole("CabinOwner"))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Index">
+                @Html.HiddenFor(model => model.Start, new { id = "Starting" })
+                <input id="StartingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä alkaen" value="@ViewBag.Starting" />
+                <br />
+                @Html.HiddenFor(model => model.End, new { id = "Ending" })
+                <input id="EndingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä päättyen" value="@ViewBag.Ending" />
+
+                <p class="text-danger">@ViewBag.DatetimeError</p>
+
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Hae" class="btn btn-primary" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    @if (cabins != null)
+    {
+        <h3>Majoituksien varausprosentit @ViewBag.Starting - @ViewBag.Ending</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="10%"></th>
+                    <th width="30%">
+                        <h6>Majoituspaikka</h6>
+                    </th>
+                    <th width="30%"></th>
+                    <th width="30%">
+                        <h6>Varausprosentti</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cabin in cabins)
+                {
+                    <tr>
+                        <td>
+                        </td>
+                        <td class="align-middle">
+                            <b>@cabin.CabinName</b>
+                        </td>
+                        <td class="align-middle"></td>
+                        <td class="align-middle">
+                            <b>@decimal.Round(cabin.ReservationPercentange, 2) %</b>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#showCabinsChart" aria-expanded="false" aria-controls="showCabinsChart">
+            Näytä kaaviossa
+        </button>
+        <br />
+        <br />
+        <div class="collapse" id="showCabinsChart">
+            <canvas id="resortCabins-chart" width="800" height="300"></canvas>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+    }
+}
+
+@if (this.User.IsInRole("Administrator"))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Index">
+                <div class="form-group">
+                    <label>Valitse toimipisteet</label>
+                    <table>
+                        @for (int i = 0; i < resortsToCheckListBox.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.CheckBoxFor(report => report.Resorts[i].Selected)
+                                </td>
+                                <td>
+                                    <input asp-for="Resorts[i].Value" class="form-control" type="hidden" value="@resortsToCheckListBox[i].Value" />
+                                    <label>@resortsToCheckListBox[i].Text</label>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                @if (ViewBag.ResortsNotSelected)
+                {
+                    <p class="text-danger">Yhtään toimipistettä ei ole valittuna</p>
+                }
+                <br />
+                @Html.HiddenFor(model => model.Start, new { id = "Starting" })
+                <input id="StartingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä alkaen" value="@ViewBag.Starting" />
+                <br />
+                @Html.HiddenFor(model => model.End, new { id = "Ending" })
+                <input id="EndingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä päättyen" value="@ViewBag.Ending" />
+
+                <p class="text-danger">@ViewBag.DatetimeError</p>
+
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Hae" class="btn btn-primary" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    @if (resorts != null)
+    {
+        <h3>Toimipisteiden majoituksien varausprosentit @ViewBag.Starting - @ViewBag.Ending</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="10%"></th>
+                    <th width="30%">
+                        <h6>Toimipiste</h6>
+                    </th>
+                    <th width="30%"></th>
+                    <th width="30%">
+                        <h6>Varausprosentti</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var resort in resorts)
+                {
+                    <tr>
+                        <td>
+                            <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#cabin-@resort.ResortId" aria-expanded="false" aria-controls="cabin-@resort.ResortId">
+                                +
+                            </button>
+                        </td>
+                        <td class="align-middle">
+                            <b>@resort.ResortName</b>
+                        </td>
+                        <td class="align-middle"><b>Yhteensä</b></td>
+                        <td class="align-middle">
+                            <b>@decimal.Round(resort.CabinsReservationsPercentange, 2) %</b>
+                        </td>
+                    </tr>
+                    @if (resort.Cabins == null)
+                    {
+                        <tr class="collapse" id="cabin-@resort.ResortId">
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <p class="font-italic">Ei majoituspaikkoja</p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                    @if (resort.Cabins != null)
+                    {
+                        @foreach (var cabin in resort.Cabins)
+                        {
+                            <tr class="collapse" id="cabin-@cabin.ResortId">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    @cabin.CabinName
+                                </td>
+                                <td>
+                                    @decimal.Round(cabin.ReservationPercentange, 2) %
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#showCabinsChart" aria-expanded="false" aria-controls="showCabinsChart">
+            Näytä kaaviossa
+        </button>
+        <br />
+        <br />
+        <div class="collapse" id="showCabinsChart">
+            <canvas id="resortCabins-chart" width="800" height="300"></canvas>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <h3>Toimipisteiden lisäpalveluvarausten määrä @ViewBag.Starting - @ViewBag.Ending</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="10%"></th>
+                    <th width="30%">
+                        <h6>Toimipiste</h6>
+                    </th>
+                    <th width="30%">
+                        <h6></h6>
+                    </th>
+                    <th width="30%">
+                        <h6>Lisäpalveluvarausten kappalemäärä</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var resort in resorts)
+                {
+                    <tr>
+                        <td>
+                            <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#activity-@resort.ResortId" aria-expanded="false" aria-controls="activity-@resort.ResortId">
+                                +
+                            </button>
+                        </td>
+                        <td class="align-middle">
+                            <b>@resort.ResortName</b>
+                        </td>
+                        <td class="align-middle"><b>Yhteensä</b></td>
+                        <td class="align-middle">
+                            <b>@resort.ActivitiesReservationsCount kpl</b>
+                        </td>
+                    </tr>
+                    @if (resort.Activities == null)
+                    {
+                        <tr class="collapse" id="activity-@resort.ResortId">
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <p class="font-italic">Ei lisäpalveluita</p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                    @if (resort.Activities != null)
+                    {
+                        @foreach (var activity in resort.Activities)
+                        {
+                            <tr class="collapse" id="activity-@activity.ResortId">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    @activity.ActivityName
+                                </td>
+                                <td>
+                                    @activity.ReservationCount kpl
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#showActivitiesChart" aria-expanded="false" aria-controls="showActivitiesChart">
+            Näytä kaaviossa
+        </button>
+        <br />
+        <br />
+        <div class="collapse" id="showActivitiesChart">
+            <canvas id="resortActivities-chart" width="800" height="300"></canvas>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+
+    new Chart(document.getElementById("resortCabins-chart"), {
+        type: 'bar',
+        data: {
+            labels:@Html.Raw(ViewBag.cabinsChartLabels),
+            datasets: [{
+                data: @Html.Raw(ViewBag.cabinsChartDataPoints),
+                fill: true,
+                backgroundColor: "#5bc0de"
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        max: 100,
+                        min: 0,
+                        stepSize: 20
+                    }
+                }],
+                xAxes: [{
+                    barThickness: 50,
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            }
+        }
+    });
+
+    new Chart(document.getElementById("resortActivities-chart"), {
+        type: 'bar',
+        data: {
+            labels:@Html.Raw(ViewBag.activitiesChartLabels),
+            datasets: [{
+                data: @Html.Raw(ViewBag.activitiesChartDataPoints),
+                fill: true,
+                backgroundColor: "#5bc0de"
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: @ViewBag.chartMax,
+                        stepSize: @ViewBag.chartStepSize
+                    }
+                }],
+                xAxes: [{
+                    barThickness: 50,
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            }
+        }
+    });
+
+    </script>
+    <script src="~/js/datepicker-basic.js"></script>
+}

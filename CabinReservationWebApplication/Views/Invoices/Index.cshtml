@@ -1,0 +1,143 @@
+﻿@model CabinReservationWebApplication.Models.Invoice
+
+@{
+    ViewData["Title"] = "Laskut";
+    IEnumerable<Invoice> invoices = ViewBag.Invoices;
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-basic.css" type="text/css" />
+}
+<h1>Laskut</h1>
+<br />
+<br />
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+<br />
+<h3>Anna hakuehdot</h3>
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+
+            <label>Toimipisteen nimi</label>
+            <input asp-for="CabinReservation.Cabin.Resort.ResortName" class="form-control" />
+
+            <label>Majoituspaikan nimi</label>
+            <input asp-for="CabinReservation.Cabin.CabinName" class="form-control" />
+
+            <label class="control-label">
+                Laskunsaajan etunimi
+            </label>
+            <input asp-for="CabinReservation.Person.FirstName" class="form-control" />
+
+            <label class="control-label">
+                Laskunsaajan sukunimi
+            </label>
+            <input asp-for="CabinReservation.Person.LastName" class="form-control" />
+
+            <!-- Setting starting- and endingdates in CabinReservation Start- and EndDate -->
+            <br />
+            @Html.HiddenFor(model => model.CabinReservation.ReservationStartDate, new { id = "Starting" })
+            <input id="StartingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä alkaen" value="@ViewBag.Starting" />
+            <br />
+            @Html.HiddenFor(model => model.CabinReservation.ReservationEndDate, new { id = "Ending" })
+            <input id="EndingDatePicker" class="form-control" autocomplete="off" placeholder="Eräpäivä päättyen" value="@ViewBag.Ending" />
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control" asp-items="@ViewBag.Statuses"></select>
+            </div>
+
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Hae" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+<br />
+@if (invoices == null && ViewBag.FirstEntry == false)
+{
+    <label>Annetuilla hakuehdoilla ei löytynyt laskuja</label>
+}
+@if (invoices != null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <h6>Toimipiste</h6>
+                </th>
+                <th>
+                    <h6>Majoituspaikka</h6>
+                </th>
+                <th>
+                    <h6>Laskunsaaja</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.DateOfExpiry)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.InvoiceTotalAmount)</h6>
+                </th>
+                <th>
+                    <h6>@Html.DisplayNameFor(model => model.PaidYesNo)</h6>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in invoices)
+            {
+                var dateOfExpiry = item.DateOfExpiry.ToString("dd'.'MM'.'yyyy");
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinReservation.Cabin.Resort.ResortName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinReservation.Cabin.CabinName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.CabinReservation.Person.FirstName) @Html.DisplayFor(modelItem => item.CabinReservation.Person.LastName)
+                    </td>
+                    <td class="align-middle">
+                        @dateOfExpiry
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.InvoiceTotalAmount) €
+                    </td>
+                    <td class="align-middle">
+                        @if (item.PaidYesNo)
+                        {
+                            <label>Kyllä</label>
+                        }
+                        @if (!item.PaidYesNo)
+                        {
+                            <label>Ei</label>
+                        }
+                    </td>
+                    <td class="text-right">
+                        <a asp-action="Edit" asp-route-id="@item.InvoiceId" class="btn btn-success btn-sm">Muokkaa</a>
+                        <a asp-action="Details" asp-route-id="@item.InvoiceId" class="btn btn-info btn-sm">Tiedot</a>
+                        @if (this.User.IsInRole("Administrator"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.InvoiceId" class="btn btn-danger btn-sm">Poista</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section scripts{
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/datepicker-basic.js"></script>
+}

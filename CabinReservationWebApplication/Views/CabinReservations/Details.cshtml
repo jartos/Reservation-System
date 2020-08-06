@@ -1,0 +1,147 @@
+﻿@model CabinReservationWebApplication.Models.CabinReservation
+
+@{
+    ViewData["Title"] = "Majoitusvarauksen tiedot";
+    var bookingTime = Model.ReservationBookingTime.ToString("dd'.'MM'.'yyyy HH:mm:ss");
+    var startDate = Model.ReservationStartDate.ToString("dd'.'MM'.'yyyy");
+    var endDate = Model.ReservationEndDate.ToString("dd'.'MM'.'yyyy");
+}
+
+<h1>Majoitusvarauksen tiedot</h1>
+
+<div>
+    <br />
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Toimipiste
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cabin.Resort.ResortName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cabin.CabinName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cabin.CabinName)
+        </dd>
+        <dt class="col-sm-2">
+            Varaaja
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Person.FirstName) @Html.DisplayFor(model => model.Person.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReservationBookingTime)
+        </dt>
+        <dd class="col-sm-10">
+            @bookingTime
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReservationStartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @startDate
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReservationEndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @endDate
+        </dd>
+        <dt class="col-sm-2">
+            Lisäpalvelut
+        </dt>
+        @if (Model.ActivityReservations.Count != 0)
+        {
+            foreach (var item in Model.ActivityReservations)
+            {
+                <dd class="col-sm-10">
+                    @item.Activity.ActivityName
+                </dd>
+                <dt class="col-sm-2"></dt>
+            }
+        }
+    </dl>
+</div>
+<div>
+    @if (Model.ReservationStartDate < DateTime.Now.AddDays(1) && User.IsInRole("CabinOwner"))
+    {
+        <a href="#" class="btn btn-success disabled">Muokkaa</a>
+        <a href="#" class="btn btn-danger disabled">Poista</a>
+    }
+    else if (Model.ReservationStartDate < DateTime.Now.AddDays(1) && User.IsInRole("Administrator"))
+    {
+        <a href="#" class="btn btn-success disabled">Muokkaa</a>
+        <a asp-action="Delete" asp-route-id="@Model.CabinReservationId" class="btn btn-danger">Poista</a>
+    }
+    else
+    {
+        <a asp-controller="CabinReservations" asp-action="Edit" asp-route-id="@Model.CabinReservationId" class="btn btn-success">Muokkaa</a>
+        <a asp-action="Delete" asp-route-id="@Model.CabinReservationId" class="btn btn-danger">Poista</a>
+    }
+    @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+    <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+</div>
+
+<br />
+<br />
+<hr />
+<br />
+<h1>Majoitusvarauksen laskut</h1>
+<br />
+<br />
+<p>
+    <a asp-controller="Invoices" asp-action="Create" asp-route-id="@Model.CabinReservationId" class="btn btn-primary">Lisää uusi</a>
+</p>
+<br />
+@if (Model.Invoices.Count() == 0 || Model.Invoices == null)
+{
+    <label>Majoitusvarauksella ei ole laskuja</label>
+}
+else
+{
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Invoices[0].DateOfExpiry)</th>
+                <th>@Html.DisplayNameFor(model => model.Invoices[0].InvoiceTotalAmount)</th>
+                <th>@Html.DisplayNameFor(model => model.Invoices[0].PaidYesNo)</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.Invoices)
+        {
+            <tbody>
+                <tr>
+                    <td>@item.DateOfExpiry.ToString("dd'.'MM'.'yyyy")</td>
+                    <td>@item.InvoiceTotalAmount</td>
+                    <td>
+                        @if (item.PaidYesNo)
+                        {
+                            <label>Kyllä</label>
+                        }
+                        @if (!item.PaidYesNo)
+                        {
+                            <label>Ei</label>
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Invoices" asp-action="Edit" asp-route-id="@item.InvoiceId" class="btn btn-success btn-sm">Muokkaa</a>
+
+                        <a type="button" class="btn btn-info btn-sm" asp-controller="Invoices" asp-action="Pdf" asp-route-id="@item.InvoiceId" title="Avaa PDF">
+                            Avaa PDF
+                        </a>
+
+                        @if (this.User.IsInRole("Administrator"))
+                        {
+                            <a asp-controller="Invoices" asp-action="Delete" asp-route-id="@item.InvoiceId" class="btn btn-danger btn-sm">Poista</a>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+}

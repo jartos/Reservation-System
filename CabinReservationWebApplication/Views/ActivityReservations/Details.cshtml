@@ -1,0 +1,61 @@
+﻿@model CabinReservationWebApplication.Models.ActivityReservation
+
+@{
+    ViewData["Title"] = "Lisäpalveluvarauksen tiedot";
+    var reservationTime = Model.ActivityReservationTime.ToString("dd'.'MM'.'yyyy");
+}
+
+<h1>Lisäpalveluvarauksen tiedot</h1>
+
+<div>
+    <br />
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CabinReservation.Cabin.Resort.ResortName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CabinReservation.Cabin.Resort.ResortName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Activity.ActivityName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Activity.ActivityName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Activity.ActivityProvider)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Activity.ActivityProvider)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Activity.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Activity.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Activity.ActivityPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Activity.ActivityPrice) €
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ActivityReservationTime)
+        </dt>
+        <dd class="col-sm-10">
+            @reservationTime
+        </dd>
+        <dt class="col-sm-2">
+            Varaaja
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CabinReservation.Person.FirstName) @Html.DisplayFor(model => model.CabinReservation.Person.LastName)
+        </dd>
+    </dl>
+</div>
+<div>
+    @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+    <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+</div>

@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CabinReservationWebApplication.Areas.Identity.Data
+
+@inject SignInManager<CabinReservationWebApplicationUser> SignInManager
+@inject UserManager<CabinReservationWebApplicationUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <ul class="navbar-nav" style="padding-top: 40px;">
+        <li class="nav-item">
+            <a class="nav-link btn btn-link text-dark text-left" id="userReservations" asp-controller="User" asp-action="CabinReservations" title="Manage"><b>Varaukseni</b></a>
+        </li>
+        <li class="nav-item">
+            <p><pre>  </pre></p>
+        </li>
+        <li class="nav-item">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index"><img padding-top="50px" src="https://cabinreservationsystemsa.blob.core.windows.net/cabinreservationsystemblob/loggedin.png" height="25" width="25" /></a>
+        </li>
+        <li class="nav-item">
+            <pre> </pre>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark"><b>Kirjaudu ulos</b></button>
+            </form>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register"><b>Rekisteröidy</b></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login"><b>Kirjaudu</b></a>
+        </li>
+    </ul>
+}
+

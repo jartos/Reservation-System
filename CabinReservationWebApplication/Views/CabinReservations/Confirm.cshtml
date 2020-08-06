@@ -1,0 +1,156 @@
+﻿@model CabinReservationWebApplication.Models.CabinReservation
+
+@inject ServiceRepository service
+
+@{
+    ViewData["Title"] = "Vahvista";
+    CabinReservation cabinReservation = ViewBag.CabinReservation;
+
+    // Calculating Duration, CabinTotalPrice, ActivitiesTotalPrice and TotalPrice
+    var duration = cabinReservation.ReservationEndDate - cabinReservation.ReservationStartDate;
+    var cabinTotalPrice = cabinReservation.Cabin.CabinPricePerDay * Convert.ToDecimal(duration.Days);
+    decimal activitiesTotalPrice = 0;
+    var totalPrice = cabinTotalPrice;
+}
+
+<h1>Varauksen yhteenveto</h1>
+
+<br />
+<br />
+<hr />
+<h4>Varaajan tiedot</h4>
+<br />
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Success">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CabinReservationId" class="form-control" />
+            <input type="hidden" asp-for="ReservationStartDate" class="form-control" />
+            <input type="hidden" asp-for="ReservationEndDate" class="form-control" />
+            <input type="hidden" asp-for="CabinId" class="form-control" />
+            <input type="hidden" asp-for="PersonId" class="form-control" />
+
+            @{
+                for (int i = 0; i < cabinReservation.ActivityReservations.Count(); i++)
+                {
+                    <input asp-for="ActivityReservations[i].ActivityId" type="hidden" value="@cabinReservation.ActivityReservations[i].ActivityId" />
+                    <input asp-for="ActivityReservations[i].ActivityReservationTime" type="hidden" value="@cabinReservation.ActivityReservations[i].ActivityReservationTime" />
+                    <input asp-for="ActivityReservations[i].ActivityReservationId" type="hidden" value="@cabinReservation.ActivityReservations[i].ActivityReservationId" />
+                }
+            }
+            <dl class="row">
+                <dt class="col-sm-4">
+                    Varaaja :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.FirstName @cabinReservation.Person.LastName
+                </dd>
+                <dt class="col-sm-4">
+                    Puhelinnumero :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.PhoneNumber
+                </dd>
+                <dt class="col-sm-4">
+                    Sähköposti :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.Email
+                </dd>
+                <dt class="col-sm-4">
+                    Osoite :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.Address
+                </dd>
+                <dt class="col-sm-4">
+                    Postinumero :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.Post.PostalCode
+                </dd>
+                <dt class="col-sm-4">
+                    Postitoimipaikka :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Person.Post.City
+                </dd>
+            </dl>
+            <hr />
+            <h4>Majoituksen tiedot</h4>
+            <br />
+            <br />
+            <dl class="row">
+                <dt class="col-sm-4">
+                    Kesto :
+                </dt>
+                <dd class="col-sm-8">
+                    @duration.Days vrk
+                </dd>
+                <dt class="col-sm-4">
+                    Ajankohta :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.ReservationStartDate.ToString("dd'.'MM'.'yyyy") - @cabinReservation.ReservationEndDate.ToString("dd'.'MM'.'yyyy")
+                </dd>
+                <dt class="col-sm-4">
+                    Majoitus :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinReservation.Cabin.CabinName, @cabinReservation.Cabin.Resort.ResortName.ToUpper()
+                </dd>
+                <dt class="col-sm-4">
+                    Kesto :
+                </dt>
+                <dd class="col-sm-8">
+                    @duration.Days vrk
+                </dd>
+                <dt class="col-sm-4">
+                    Majoituksen hinta yht :
+                </dt>
+                <dd class="col-sm-8">
+                    @cabinTotalPrice €
+                </dd>
+            </dl>
+            <hr />
+            <h4>Lisäpalveluiden tiedot</h4>
+            <br />
+            <br />
+            <dl class="row">
+                @foreach (var item in cabinReservation.ActivityReservations)
+                {
+                    activitiesTotalPrice += item.Activity.ActivityPrice;
+                    totalPrice += item.Activity.ActivityPrice;
+
+                    <dt class="col-sm-4">
+                        @item.Activity.ActivityName :
+                    </dt>
+                    <dd class="col-sm-8">
+                        @item.ActivityReservationTime.ToString("dd'.'MM'.'yyyy")
+                    </dd>
+                }
+                <dt class="col-sm-4">
+                    Lisäpalveluiden hinta yht :
+                </dt>
+                <dd class="col-sm-8">
+                    @activitiesTotalPrice  €
+                </dd>
+            </dl>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-4">
+                    Varauksen loppusumma :
+                </dt>
+                <dd class="col-sm-8">
+                    <b>@totalPrice €</b>
+                </dd>
+            </dl>
+            <div class="form-group">
+                <input type="submit" value="Vahvista" class="btn btn-primary" />
+            </div>
+            <br />
+            <br />
+        </form>
+    </div>
+</div>

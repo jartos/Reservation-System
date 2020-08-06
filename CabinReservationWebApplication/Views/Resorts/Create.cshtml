@@ -1,0 +1,27 @@
+﻿@model CabinReservationWebApplication.Models.Resort
+
+@{
+    ViewData["Title"] = "Lisää toimipiste";
+}
+
+<h1>Lisää toimipiste</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ResortName" class="control-label"></label>
+                <input asp-for="ResortName" class="form-control" />
+                <span asp-validation-for="ResortName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lisää" class="btn btn-primary" />
+            </div>
+        </form>
+        @*<button onclick="window.history.go(-1);" class="btn btn-secondary">Takaisin</button>*@
+        <a asp-action="Index" class="btn btn-secondary">Takaisin</a>
+    </div>
+</div>

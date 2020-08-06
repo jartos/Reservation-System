@@ -1,0 +1,213 @@
+﻿@using  Newtonsoft.Json
+
+@model CabinReservationWebApplication.Models.CabinReservation
+
+@{
+    ViewData["Title"] = "Muokkaa majoitusvarausta";
+}
+
+@inject ServiceRepository service
+
+@{
+    ViewData["Title"] = "Tee varaus";
+
+    // Getting avaible Activities by ResortId
+    var activities = await service.GetActivities(ViewBag.Cabin.ResortId);
+
+    // Getting unavaible dates in calendar
+    var cabinReservations = await service.GetCabinReservations(ViewBag.Cabin.CabinId);
+    List<DateTime> reservedDays = new List<DateTime>();
+    // This are for setting calendar date-cell background-pic to half-red/half-green
+    List<DateTime> reservedStartDays = new List<DateTime>();
+    List<DateTime> reservedEndDays = new List<DateTime>();
+    // This are for setting calendar date-cell in red if Start- and EndDate are same
+    List<DateTime> reservedSameDays = new List<DateTime>();
+    if (cabinReservations != null)
+    {
+        foreach (var item in cabinReservations)
+        {
+            var reservationLength = item.ReservationEndDate - item.ReservationStartDate;
+            reservedDays.Add(item.ReservationStartDate);
+            reservedStartDays.Add(item.ReservationStartDate);
+            reservedEndDays.Add(item.ReservationEndDate);
+
+            if (reservedEndDays.Contains(item.ReservationStartDate)) reservedSameDays.Add(item.ReservationStartDate);
+            if (reservedStartDays.Contains(item.ReservationEndDate)) reservedSameDays.Add(item.ReservationEndDate);
+
+            for (int i = 1; i < Convert.ToInt32(reservationLength.TotalDays); i++)
+            {
+                reservedDays.Add(item.ReservationStartDate.AddDays(i));
+            }
+        }
+    }
+
+    // Setting original Duration
+    var changeDuration = (Model.ReservationEndDate - Model.ReservationStartDate).Days;
+    // Removing old ReservationDays in reservedDays, reservedStartDays and reservedEndDays
+    for (var dt = Model.ReservationStartDate; dt <= Model.ReservationEndDate; dt = dt.AddDays(1))
+    {
+        reservedDays.Remove(dt);
+        reservedStartDays.Remove(dt);
+        reservedEndDays.Remove(dt);
+    }
+
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/datepicker-green.css" type="text/css" />
+}
+
+<br />
+<br />
+<h1 class="text-center">@ViewBag.Cabin.CabinName</h1>
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <br />
+        <br />
+        <div class="col-md-4">
+
+            <div class="btn-group dropright btn-block" style="width: 16.3em; padding: .2em .2em 0;">
+                <button type="button" class="btn btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#155724; background-color:#c3e6cb">
+                    <div id='Days' style="font-size:15px; font-weight: bold;">Valitse vuorokaudet : 0 vrk</div>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    @for (int i = 0; i < 30; i++)
+                    {
+                        <a class="dropdown-item" onclick="ChangeDays(@i)">@i vrk</a>
+                    }
+                </div>
+            </div>
+            <p class="text-danger" id="WarningDurationNotSelected">Kestoa ei valittuna</p>
+
+            <label style="font-size:15px;">
+                <b>
+                    Alkuperäinen varaus: @Model.ReservationStartDate.ToString("dd'.'MM'.'yyyy") - @Model.ReservationEndDate.ToString("dd'.'MM'.'yyyy")
+                </b>
+            </label>
+
+            <div id="makeCabinReservationsCalendar"></div>
+
+            <p class="text-danger" id="WarningDaysNotSelected">Päivämääriä ei valittuna</p>
+
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-5">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-success">
+                    <p style="color:#155724; font-size:15px; font-weight: bold; text-align: center;">Yhteenveto</p>
+                    <hr />
+                    @*@ViewBag.Cabin.CabinName , @ViewBag.Cabin.CabinPricePerDay € / vrk*@
+                    <div id="CabinTotalPrice" style="font-size:15px; font-weight: bold; ">
+                        Majoituksen kokonaishinta 0 vuorokautta = 0 €
+                    </div>
+                    <div id="ActivitesTotalPrice" style="font-size:15px; font-weight: bold; ">
+                        Lisäpalveluiden kokonaishinta = 0 €
+                    </div>
+                    <br />
+                    <div id="TotalPrice" style="font-size:15px; font-weight: bold; ">
+                        Kokonaishinta yhteensä = 0 €
+                    </div>
+                </li>
+            </ul>
+
+            <!-- Form -->
+            @using (Html.BeginForm())
+            {
+                <input type="hidden" value="@Model.ReservationStartDate" id="StartDate" />
+
+                <input type="hidden" asp-for="CabinId" class="form-control" value="@Model.CabinId" />
+                <input type="hidden" asp-for="Cabin.CabinName" class="form-control" value="@ViewBag.Cabin.CabinName" />
+                <input type="hidden" asp-for="Cabin.Resort.ResortName" class="form-control" value="@ViewBag.Cabin.Resort.ResortName" />
+                <input type="hidden" asp-for="Cabin.CabinPricePerDay" class="form-control" value="@ViewBag.Cabin.CabinPricePerDay" />
+
+                <input type="hidden" asp-for="PersonId" class="form-control" value="@Model.PersonId" />
+                <input type="hidden" asp-for="CabinReservationId" class="form-control" value="@Model.CabinReservationId" />
+                <input type="hidden" asp-for="ReservationBookingTime" class="form-control" value="@Model.ReservationBookingTime" />
+
+                <input type="hidden" asp-for="Person.Address" class="form-control" value="@Model.Person.Address" />
+                <input type="hidden" asp-for="Person.Email" class="form-control" value="@Model.Person.Email" />
+                <input type="hidden" asp-for="Person.FirstName" class="form-control" value="@Model.Person.FirstName" />
+                <input type="hidden" asp-for="Person.LastName" class="form-control" value="@Model.Person.LastName" />
+                <input type="hidden" asp-for="Person.PersonId" class="form-control" value="@Model.Person.PersonId" />
+                <input type="hidden" asp-for="Person.PhoneNumber" class="form-control" value="@Model.Person.PhoneNumber" />
+                <input type="hidden" asp-for="Person.Post.City" class="form-control" value="@Model.Person.Post.City" />
+                <input type="hidden" asp-for="Person.Post.PostalCode" class="form-control" value="@Model.Person.Post.PostalCode" />
+                <input type="hidden" asp-for="Person.SocialSecurityNumber" class="form-control" value="@Model.Person.SocialSecurityNumber" />
+
+                @Html.HiddenFor(model => model.ReservationStartDate, new { id = "ReservationStartDate" })
+                @Html.HiddenFor(model => model.ReservationEndDate, new { id = "ReservationEndDate" })
+
+                @for (int x = 0; x < Model.ActivityReservations.Count; x++)
+                {
+                    @Html.HiddenFor(model => model.ActivityReservations[x].ActivityId, new { id = "ActivityReservations-" + x })
+                }
+                <input type="submit" class="btn btn-primary" hidden id="submitForm" />
+            }
+            <div class="text-right">
+                <button onclick="CheckFormValues()" class="btn btn-primary btn-block" style="font-size:15px; font-weight: bold;">Muokkaa</button>
+            </div>
+
+            <br /><br />
+            <ul class="list-group">
+                @if (activities != null)
+                {
+                    @foreach (var item in activities)
+                    {
+                        <li class="list-group-item list-group-item-success" style="font-size:15px; font-weight: bold;">
+                            <button class="btn btn-success btn-number" onclick="AddActivity('@item.ActivityId','@item.ActivityName','@item.ActivityPrice')">+</button>
+                            @item.ActivityName @item.ActivityPrice €
+                        </li>
+                    }
+                }
+            </ul>
+            <p class="text-danger" id="activityListError">Olet valinnut enimmäismäärän lisäpalveluita</p>
+            <br />
+            <ul class="list-group" id="SelectedActivitys">
+            </ul>
+        </div>
+        <div class="col-md-1">
+            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @* Scripts for calendar *@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/cabinreservation.js"></script>
+
+    <script type="text/javascript">
+
+        // Converting C#-variables to JS-variables
+        var cabinPricePerDay = @ViewBag.Cabin.CabinPricePerDay
+        var reservedDays = @Html.Raw(Json.Serialize(reservedDays))
+        var reservedStartDays = @Html.Raw(Json.Serialize(reservedStartDays))
+        var reservedEndDays = @Html.Raw(Json.Serialize(reservedEndDays))
+        var reservedSameDays = @Html.Raw(Json.Serialize(reservedSameDays))
+
+        // If old CabinReservation has ActivityReservations, add ActivityReservations to $SelectedActivitys
+        var activityReservations = JSON.parse('@Html.Raw(Json.Serialize(Model.ActivityReservations))');
+        for (item of activityReservations) {
+            if (item.activityReservationId != 0) {
+                AddActivity(item.activityId, item.activity.activityName, item.activity.activityPrice);
+            }
+        }
+
+        Duration = @changeDuration
+
+        StartDate = new Date($("#StartDate").val());
+
+        StartDate.setHours(00);
+
+        ChangeDays(Duration);
+
+        $("#WarningDaysNotSelected").css({ opacity: 1 });
+
+    </script>
+}
