@@ -20,7 +20,7 @@ Application has been developed in Microsoft ASP.NET Core Framework with Visual S
 has been implemented with MVC (Model-View-Controller) design pattern.
 
 
-![Database_structure](https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG)
+![alt Database_structure](https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG)
 
 Developers:
 Juha Korhonen
