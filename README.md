@@ -25,7 +25,7 @@ Database structure:
 <br></br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 <br></br>
-<br></br>
+
 Developers:
 Juha Korhonen, 
 Jarno Tossavainen and
