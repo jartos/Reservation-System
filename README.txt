@@ -11,7 +11,7 @@ Cabin owner can add own cabins to the system and define the cabin information.
 Cabin owner can also add pictures of the cabin to the database and fully manage the reservations of the cabin. 
 Admin role is for managing the all information in the reservation system with no limits. Admin can create and add newresorts to the system.
 Admin can also see detailed reporting about reservations and activities by resort with graphicalpresentation. 
-Reservation system system uses ASP.NET Core Identity for managing logging in and dividing user roles.
+Reservation system uses ASP.NET Core Identity for managing logging in and dividing user roles.
 
 
 GitHub files include CabinReservationAPI (Backend) and CabinReservationWebApplication (Frontend).
