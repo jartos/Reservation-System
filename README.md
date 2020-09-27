@@ -21,7 +21,10 @@ has been implemented with MVC (Model-View-Controller) design pattern.
 
 Database structure:
 <br>
-<img src="https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG" style="width: 50%">
+<img src="https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG" class="display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;">
 <br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 
