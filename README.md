@@ -20,10 +20,9 @@ Application has been developed in Microsoft ASP.NET Core Framework with Visual S
 has been implemented with MVC (Model-View-Controller) design pattern.
 
 Database structure:
-<img src="https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG" width="40%">
-![Database structure](https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG)
-
-
+<br>
+<img src="https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG" width="80%">
+<br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 
 
