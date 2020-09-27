@@ -18,14 +18,14 @@ GitHub files include CabinReservationAPI (Backend) and CabinReservationWebApplic
 App uses Microsoft Azure SQL Database for storing all information.
 Application has been developed in Microsoft ASP.NET Core Framework with Visual Studio and
 has been implemented with MVC (Model-View-Controller) design pattern.
-
+<br></br>
 Database structure:
 <br></br>
 <img src="https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG" width="85%">
-<br />
+<br></br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 
-<br />
+<br></br>
 Developers:
 Juha Korhonen
 Jarno Tossavainen
