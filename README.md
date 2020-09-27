@@ -2,7 +2,7 @@ Reservation System
 
 In this app user can make cabin reservations. 
 Registered user can become a cabin owner and add cabins to the reservation system.
-Admin role is for managing all user, cabin, reservation.. etc. information.
+Admin role is for managing all user, cabin, resort, reservation and activity information.
 
 A registered user can make a cabin reservation and add activities to reservation. All the reservation information can be seen by user and
 reservation can be cancelled one day before the reservation starts. The bill is sent to user as a PDF-file. 
