@@ -19,10 +19,11 @@ App uses Microsoft Azure SQL Database for storing all information.
 Application has been developed in Microsoft ASP.NET Core Framework with Visual Studio and
 has been implemented with MVC (Model-View-Controller) design pattern.
 
-
+Database structure
 
 ![Database structure](https://hjtpictures.blob.core.windows.net/hjtpictures/Database.PNG)
 
+Picture made with MySQL by Jarno Tossavainen
 
 Developers:
 Juha Korhonen
