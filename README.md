@@ -1,4 +1,4 @@
-Reservation System
+# Reservation System
 
 In this app user can make cabin reservations. 
 Registered user can become a cabin owner and add cabins to the reservation system.
