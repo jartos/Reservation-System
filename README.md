@@ -1,5 +1,7 @@
 # Reservation System
 
+This is a Savonia Code Academy final project.
+
 In this app user can make cabin reservations. 
 Registered user can become a cabin owner and add cabins to the reservation system.
 Admin role is for managing all the user, cabin, resort, reservation and activity information.
