@@ -1,7 +1,6 @@
 # Reservation System
 
 This is a Savonia Code Academy final project.
-Read more from the <a href="https://blogi.savonia.fi/groupa">blog</a>.
 
 In this app user can make cabin reservations. 
 Registered user can become a cabin owner and add cabins to the reservation system.
@@ -28,7 +27,7 @@ Database structure:
 <br></br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 <br></br>
-
+Read more from the <a href="https://blogi.savonia.fi/groupa">blog</a>.
 Developers:
 Juha Korhonen, 
 Jarno Tossavainen and
