@@ -27,7 +27,7 @@ Database structure:
 <br></br>
 Picture made with MySQL Workbench by Jarno Tossavainen
 <br></br>
-Read more from the <a href="https://blogi.savonia.fi/groupa">blog</a>.<br></br>
+Read more from the <a href="https://blogi.savonia.fi/groupa">Blog</a><br></br>
 Developers:
 Juha Korhonen, 
 Jarno Tossavainen and
